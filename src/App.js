@@ -1,38 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import { htmlFontSize } from './styles/base'
+import { color } from './styles/color'
+import { textTheme } from './styles/textTheme'
+
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
+import Home from './Pages/Home/Home'
+import Detail from './Pages/Detail/Detail'
 
 function App() {
-  const [movies, setMovies] = useState([]);
-  useEffect(() => {
-    async function getData() {
-      const response = await fetch('/api/movies');
-      const payload = await response.json();
-      setMovies(payload.data);
-    }
-    getData();
-  }, []);
+  const theme = extendTheme({
+    ...textTheme,
+    styles: {
+      global: {
+        'html,body': {
+          fontSize: [htmlFontSize * 0.75, htmlFontSize, htmlFontSize * 1.25],
+          backgroundColor: color.antique,
+        },
+      },
+    },
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and your changes will live-update automatically.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Nice Movies:</p>
-        <p>{JSON.stringify(movies)}</p>
-        
-      </header>
-    </div>
-  );
+    <>
+      <ChakraProvider theme={theme}>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route path="/detail/:id">
+              <Detail />
+            </Route>
+          </Switch>
+        </Router>
+      </ChakraProvider>
+    </>
+  )
 }
 
-export default App;
+export default App
